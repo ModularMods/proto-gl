@@ -93,9 +93,7 @@ FOR each animation in numAnims
         // Loop over each keyframe
         FOR each keyframe in numKeyframes
             FLOAT keyframeTime  // Time of this keyframe
-            FLOAT
-
-[] keyValue    // Value at this keyframe (depends on channel type)
+            FLOAT[] keyValue    // Value at this keyframe (depends on channel type)
 ```
 
 ## Getting Started
