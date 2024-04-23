@@ -1,0 +1,51 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.freefair.gradle:lombok-plugin:8.6"
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+group = 'net.modularmods'
+version = '1.0-SNAPSHOT'
+
+apply plugin: "io.freefair.lombok"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    def lwjglVersion = "3.3.3"
+    def lwjglNatives = "natives-windows"
+
+    def lwjglComponents = [
+            "lwjgl",
+            "lwjgl-opengl",
+    ]
+
+    lwjglComponents.each { component ->
+        implementation "org.lwjgl:${component}:${lwjglVersion}"
+        runtimeOnly "org.lwjgl:${component}:${lwjglVersion}:${lwjglNatives}"
+    }
+
+    implementation 'org.apache.logging.log4j:log4j-api:2.23.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
+
+    // Add Lombok dependencies
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+}
+
+test {
+    useJUnitPlatform()
+}
