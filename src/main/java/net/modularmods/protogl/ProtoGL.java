@@ -1,4 +1,4 @@
-package net.modularmods;
+package net.modularmods.protogl;
 
 import lombok.Getter;
 import org.apache.logging.log4j.Level;

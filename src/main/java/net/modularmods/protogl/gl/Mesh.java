@@ -1,9 +1,8 @@
-package net.modularmods.gl;
+package net.modularmods.protogl.gl;
 
 import lombok.Getter;
-import net.modularmods.ProtoGL;
-import net.modularmods.gl.buffers.VertexArrayObject;
-import net.modularmods.render.IRenderable;
+import net.modularmods.protogl.gl.buffers.VertexArrayObject;
+import net.modularmods.protogl.render.IRenderable;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL31;

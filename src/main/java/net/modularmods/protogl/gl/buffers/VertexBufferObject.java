@@ -1,4 +1,4 @@
-package net.modularmods.gl.buffers;
+package net.modularmods.protogl.gl.buffers;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;

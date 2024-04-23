@@ -1,7 +1,7 @@
-package net.modularmods.loader.data;
+package net.modularmods.protogl.loader.data;
 
 import lombok.Getter;
-import net.modularmods.gl.Mesh;
+import net.modularmods.protogl.gl.Mesh;
 
 /**
  * Represents a node in a scene graph or hierarchy, typically used in 3D applications to manage objects in a scene.

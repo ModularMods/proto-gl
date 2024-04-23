@@ -1,6 +1,6 @@
-package net.modularmods.utils;
+package net.modularmods.protogl.utils;
 
-import net.modularmods.ProtoGL;
+import net.modularmods.protogl.ProtoGL;
 
 import java.io.DataInputStream;
 import java.io.IOException;

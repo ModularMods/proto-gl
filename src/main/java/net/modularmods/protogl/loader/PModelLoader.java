@@ -1,11 +1,11 @@
-package net.modularmods.loader;
+package net.modularmods.protogl.loader;
 
-import net.modularmods.gl.Mesh;
-import net.modularmods.gl.MeshData;
-import net.modularmods.loader.data.JointData;
-import net.modularmods.loader.data.NodeData;
-import net.modularmods.loader.data.PModel;
-import net.modularmods.utils.IOUtils;
+import net.modularmods.protogl.gl.Mesh;
+import net.modularmods.protogl.gl.MeshData;
+import net.modularmods.protogl.loader.data.JointData;
+import net.modularmods.protogl.loader.data.NodeData;
+import net.modularmods.protogl.loader.data.PModel;
+import net.modularmods.protogl.utils.IOUtils;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;

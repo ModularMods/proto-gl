@@ -1,4 +1,4 @@
-package net.modularmods.gl.buffers;
+package net.modularmods.protogl.gl.buffers;
 
 import lombok.Getter;
 import lombok.Setter;

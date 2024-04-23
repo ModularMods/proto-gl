@@ -1,4 +1,4 @@
-package net.modularmods.render;
+package net.modularmods.protogl.render;
 
 public interface IRenderable {
     void cleanup();

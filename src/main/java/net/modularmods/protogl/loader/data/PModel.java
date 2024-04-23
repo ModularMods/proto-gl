@@ -1,4 +1,4 @@
-package net.modularmods.loader.data;
+package net.modularmods.protogl.loader.data;
 
 import lombok.Getter;
 
