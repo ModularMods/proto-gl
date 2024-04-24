@@ -67,11 +67,9 @@ public class PModelLoader {
                     float[] scale = IOUtils.readFloats(dis, 3, "           Scale");
                     int numMeshes = IOUtils.readInt(dis, "           Number of meshes");
 
-                    Mesh meshData = null;
-                    String materialName = "";
+                    MeshData meshData = null;
 
                     if (numMeshes > 0) {
-                        materialName = IOUtils.readString(dis, "               Material name");
                         for (int j = 0; j < numMeshes; j++) {
                             String meshName = IOUtils.readString(dis, "               Mesh name");
                             int numIndices = IOUtils.readInt(dis, "               Number of indices");
@@ -96,14 +94,14 @@ public class PModelLoader {
                                 float[] weights = IOUtils.readFloats(dis, numWeights, "               Weights");
 
                                 // Create MeshData for skinned meshes
-                                meshData = Mesh.load(new MeshData(vertices, uvs, normals, indices, jointsFloat, weights));
+                                meshData = new MeshData(vertices, uvs, normals, indices, jointsFloat, weights);
                             } else {
                                 // Create MeshData for static meshes
-                                meshData = Mesh.load(new MeshData(vertices, uvs, normals, indices));
+                                meshData = new MeshData(vertices, uvs, normals, indices);
                             }
                         }
                     }
-                    nodeData[i] = new NodeData(nodeName, parentNodeName, materialName, translation, rotation, scale, meshData);
+                    nodeData[i] = new NodeData(nodeName, parentNodeName, translation, rotation, scale, meshData);
                 }
             }
 

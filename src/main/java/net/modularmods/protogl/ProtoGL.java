@@ -1,6 +1,7 @@
 package net.modularmods.protogl;
 
 import lombok.Getter;
+import net.modularmods.protogl.loader.PModelLoader;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +22,7 @@ public class ProtoGL {
     public static void main(String[] args) {
         Configurator.setRootLevel(Level.DEBUG); // Set global log level to debug
 
-        System.out.println("Hello world!");
+        PModelLoader.loadPMod("C:\\Users\\Komputer\\Documents\\GitHub\\proto-gl\\assets\\untitled.pmod");
     }
 
 }
