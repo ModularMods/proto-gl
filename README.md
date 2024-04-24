@@ -14,6 +14,8 @@ It provides developers tools to load, manage, and display animations loaded a bi
 ### `.pmod` Model File (Binary Format)
 The `.pmod` file format is used to describe 3D models in a structured binary form that includes mesh data, skeletal information, and animation nodes. Below is a detailed breakdown of its structure:
 
+[Link to the Blender Addon (io_pmod_blender_addon)](https://github.com/ModularMods/proto-gl/tree/main/io_pmod_blender_addon)
+
 ```plaintext
 BYTE[4] "PMOD"              // Magic Number (ASCII)
 BYTE    major               // Version (Major)
