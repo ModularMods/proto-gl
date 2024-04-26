@@ -115,7 +115,7 @@ def write_pmod(context, filepath):
                     num_indices = len(mesh.loop_triangles) * 3
                     num_vertices = len(mesh.vertices)
                     # Pack indices and vertices count in big-endian format
-                    f.write(struct.pack('>III', num_indices, num_vertices, 0))  # Number of indices, vertices, joints (assuming no skeletal data here)
+                    f.write(struct.pack('>IIII', num_indices, num_vertices, 0, 0))  # Number of indices, vertices, joints, weights (assuming no skeletal data here)
 
                     # Gather indices
                     indices = []
@@ -139,9 +139,9 @@ def write_pmod(context, filepath):
                             uv = uv_layer[loop.index].uv
                             uvs.extend([uv.x, uv.y])
 
-                    # Pack UVs, vertices, and normals in big-endian format
-                    f.write(struct.pack(f'>{len(uvs)}f', *uvs))
+                    # Pack vertices, UVs, and normals in big-endian format
                     f.write(struct.pack(f'>{len(vertices)}f', *vertices))
+                    f.write(struct.pack(f'>{len(uvs)}f', *uvs))
                     f.write(struct.pack(f'>{len(normals)}f', *normals))
 
                     # Clean up the temporary mesh
