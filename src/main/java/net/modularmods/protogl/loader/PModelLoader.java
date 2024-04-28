@@ -4,13 +4,14 @@ import net.modularmods.protogl.gl.Mesh;
 import net.modularmods.protogl.gl.MeshData;
 import net.modularmods.protogl.loader.data.JointData;
 import net.modularmods.protogl.loader.data.NodeData;
-import net.modularmods.protogl.loader.data.PModel;
+import net.modularmods.protogl.loader.data.ModelData;
 import net.modularmods.protogl.utils.IOUtils;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Handles loading of PModel data from a file, supporting both skeletal animations and static models.
@@ -19,12 +20,12 @@ public class PModelLoader {
 
     /**
      * Loads a PMod file and constructs a PModel object based on its contents.
-     * @param inputFile The path to the PMod file to load.
+     * @param classLoader The class loader to use to load the file.
+     * @param file The path to the PMod file to load.
      * @return A fully constructed PModel object.
      */
-    public static PModel loadPMod(String inputFile) {
-        System.out.println("Loading model: " + inputFile);
-        try (DataInputStream dis = new DataInputStream(new FileInputStream(inputFile))) {
+    public static ModelData loadPMod(ClassLoader classLoader, String file) {
+        try (DataInputStream dis = new DataInputStream(Objects.requireNonNull(classLoader.getResourceAsStream(file)))) {
             // Check the magic number to confirm it's a valid PMOD file
             if (!IOUtils.readMagicNumber(dis).equals("PMOD")) {
                 throw new IOException("Invalid file format");
@@ -106,9 +107,9 @@ public class PModelLoader {
             }
 
             if (hasArmature) {
-                return new PModel(nodeData, skeletonName, jointData);
+                return new ModelData(nodeData, skeletonName, jointData);
             } else {
-                return new PModel(nodeData);
+                return new ModelData(nodeData);
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException("File not found: " + e.getMessage(), e);

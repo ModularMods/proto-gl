@@ -21,8 +21,6 @@ public class ProtoGL {
 
     public static void main(String[] args) {
         Configurator.setRootLevel(Level.DEBUG); // Set global log level to debug
-
-        PModelLoader.loadPMod("C:\\Users\\Komputer\\Documents\\GitHub\\proto-gl\\assets\\untitled.pmod");
     }
 
 }
