@@ -51,6 +51,8 @@ def write_pmod(context, filepath):
     with open(filepath, 'wb') as f:
         # Write header
         f.write(b'PMOD')  # Magic number
+        print("Magic number: PMOD")
+
         has_armature = any(obj.type == 'ARMATURE' for obj in scene.objects)
         has_nodes = any(obj.type != 'ARMATURE' for obj in scene.objects)
 
@@ -62,7 +64,9 @@ def write_pmod(context, filepath):
             flags |= 0b00000001  # Nodes present
 
         # Write version and flags in big-endian format
-        f.write(struct.pack('>BBB', 1, 0, flags))
+        version_flags = struct.pack('>BBB', 1, 0, flags)
+        f.write(version_flags)
+        print(f" Version and flags: {1, 0, flags}")
 
         # Determine number of nodes (excluding armatures)
         num_nodes = len([obj for obj in scene.objects if obj.type != 'ARMATURE'])
@@ -72,36 +76,63 @@ def write_pmod(context, filepath):
             armature = next((obj for obj in scene.objects if obj.type == 'ARMATURE'), None)
             bones = armature.data.bones
             # Write the number of joints and nodes in big-endian format
-            f.write(struct.pack('>BB', len(bones), num_nodes))
+            joint_node_counts = struct.pack('>BB', len(bones), num_nodes)
+            f.write(joint_node_counts)
+            print(f"  Joints and nodes: {len(bones), num_nodes}")
+
             # Write skeleton name
-            f.write(armature.name.encode() + b'\0')
+            skeleton_name = armature.name.encode() + b'\0'
+            f.write(skeleton_name)
+            print(f"  Skeleton name: {armature.name}")
 
             for bone in bones:
-                f.write(bone.name.encode() + b'\0')
+                bone_name = bone.name.encode() + b'\0'
+                f.write(bone_name)
+                print(f"   Bone name: {bone.name}")
+
                 parent_name = bone.parent.name.encode() + b'\0' if bone.parent else b'root\0'
                 f.write(parent_name)
+                print(f"   Parent name: {bone.parent.name if bone.parent else 'root'}")
+
                 # Inverse bind matrix in big-endian format
                 matrix = bone.matrix_local.inverted()
-                f.write(struct.pack('>16f', *matrix))  # Note '>16f' for big-endian
+                matrix_data = struct.pack('>16f', *matrix)
+                f.write(matrix_data)
+                print(f"   Matrix: {list(matrix)}")
 
         else:
             # Write zero for number of joints and number of nodes in big-endian format
-            f.write(struct.pack('>BB', 0, num_nodes))
+            zero_joint_node_counts = struct.pack('>BB', 0, num_nodes)
+            f.write(zero_joint_node_counts)
+            print(f"  Zero joint and node counts: {0, num_nodes}")
 
         # Iterate through each object and export nodes that are not armatures
         for obj in scene.objects:
             if obj.type != 'ARMATURE':
-                f.write(obj.name.encode() + b'\0')
+                node_name = obj.name.encode() + b'\0'
+                f.write(node_name)
+                print(f" Node name: {obj.name}")
+
                 parent_name = obj.parent.name.encode() + b'\0' if obj.parent and obj.parent.type != 'ARMATURE' else b'root\0'
                 f.write(parent_name)
+                print(f" Parent name: {obj.parent.name if obj.parent and obj.parent.type != 'ARMATURE' else 'root'}")
+
                 loc, rot, scale = obj.location, obj.rotation_quaternion, obj.scale
-                f.write(struct.pack('>3f', *loc))
-                f.write(struct.pack('>4f', *rot))
-                f.write(struct.pack('>3f', *scale))
+                loc_data = struct.pack('>3f', *loc)
+                rot_data = struct.pack('>4f', *rot)
+                scale_data = struct.pack('>3f', *scale)
+                f.write(loc_data)
+                f.write(rot_data)
+                f.write(scale_data)
+                print(f" Location: {list(loc)}")
+                print(f" Rotation: {list(rot)}")
+                print(f" Scale: {list(scale)}")
 
                 # Determine number of meshes contained in this node
                 num_meshes = 1
-                f.write(struct.pack('>I', num_meshes))  # Write number of meshes in big-endian format
+                num_meshes_data = struct.pack('>I', num_meshes)
+                f.write(num_meshes_data)
+                print(f" Number of meshes: {num_meshes}")
 
                 # Export meshes
                 if obj.type == 'MESH':
@@ -109,22 +140,10 @@ def write_pmod(context, filepath):
                     mesh.calc_loop_triangles()
 
                     # Write the mesh name
-                    f.write(obj.data.name.encode() + b'\0')
+                    mesh_name = obj.data.name.encode() + b'\0'
+                    f.write(mesh_name)
+                    print(f"  Mesh name: {obj.data.name}")
 
-                    # Collect mesh data
-                    num_indices = len(mesh.loop_triangles) * 3
-                    num_vertices = len(mesh.vertices)
-                    # Pack indices and vertices count in big-endian format
-                    f.write(struct.pack('>IIII', num_indices, num_vertices, 0, 0))  # Number of indices, vertices, joints, weights (assuming no skeletal data here)
-
-                    # Gather indices
-                    indices = []
-                    for tri in mesh.loop_triangles:
-                        indices.extend(tri.vertices)
-                    # Pack indices in big-endian format
-                    f.write(struct.pack(f'>{num_indices}I', *indices))
-
-                    # Gather and write vertices, normals, and UVs
                     vertices = []
                     normals = []
                     uvs = []
@@ -139,10 +158,35 @@ def write_pmod(context, filepath):
                             uv = uv_layer[loop.index].uv
                             uvs.extend([uv.x, uv.y])
 
+                    # Collect mesh data
+                    num_indices = len(mesh.loop_triangles) * 3
+                    num_vertices = len(mesh.vertices)
+                    num_uvs = len(uvs)
+
+                    # Pack indices and vertices count in big-endian format
+                    mesh_counts = struct.pack('>IIIII', num_indices, num_vertices, num_uvs, 0, 0)  # Number of indices, vertices, joints, weights (assuming no skeletal data here)
+                    f.write(mesh_counts)
+                    print(f"  Mesh counts: {num_indices, num_vertices, num_uvs, 0, 0}")
+
+                    # Gather indices
+                    indices = []
+                    for tri in mesh.loop_triangles:
+                        indices.extend(tri.vertices)
+                    # Pack indices in big-endian format
+                    indices_data = struct.pack(f'>{num_indices}I', *indices)
+                    f.write(indices_data)
+                    print(f"  Indices: {indices}")
+
                     # Pack vertices, UVs, and normals in big-endian format
-                    f.write(struct.pack(f'>{len(vertices)}f', *vertices))
-                    f.write(struct.pack(f'>{len(uvs)}f', *uvs))
-                    f.write(struct.pack(f'>{len(normals)}f', *normals))
+                    vertices_data = struct.pack(f'>{len(vertices)}f', *vertices)
+                    uvs_data = struct.pack(f'>{len(uvs)}f', *uvs)
+                    normals_data = struct.pack(f'>{len(normals)}f', *normals)
+                    f.write(vertices_data)
+                    f.write(uvs_data)
+                    f.write(normals_data)
+                    print(f"  Vertices: {vertices}")
+                    print(f"  UVs: {uvs}")
+                    print(f"  Normals: {normals}")
 
                     # Clean up the temporary mesh
                     obj.to_mesh_clear()

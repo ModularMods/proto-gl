@@ -75,12 +75,13 @@ public class PModelLoader {
                             String meshName = IOUtils.readString(dis, "               Mesh name");
                             int numIndices = IOUtils.readInt(dis, "               Number of indices");
                             int numVertices = IOUtils.readInt(dis, "               Number of vertices");
+                            int numUvs = IOUtils.readInt(dis, "               Number of Uvs");
                             int numJoints = IOUtils.readInt(dis, "               Number of joints");
                             int numWeights = IOUtils.readInt(dis, "               Number of weights");
 
                             int[] indices = IOUtils.readInts(dis, numIndices, "               Indices");
                             float[] vertices = IOUtils.readFloats(dis, numVertices * 3, "               Vertices");
-                            float[] uvs = IOUtils.readFloats(dis, numVertices * 2, "               UVs");
+                            float[] uvs = IOUtils.readFloats(dis, numUvs, "               UVs");
                             float[] normals = IOUtils.readFloats(dis, numVertices * 3, "               Normals");
 
                             if (numJoints > 0) {
